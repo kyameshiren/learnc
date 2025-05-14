@@ -2,24 +2,21 @@
 
 #define MAX_LENGTH 1000
 
-
+void rev(char in[], char out[], int end);
 int getLine(char s[]);
-void filter(char in[], int end);
 
 int main() {
 
-        int len = 0;
+        int len;
         char line[MAX_LENGTH];
+        char new[MAX_LENGTH];
+
         while ((len = getLine(line)) > 0) {
-                if (line[0] != '\n') {
-                        filter(line, len);
-                        printf("%s", line);
-                }
+                rev(line, new, len);
+                printf("%s", new);
         }
-        return 0;
 }
 
-// Puts current line into buffer + string format
 int getLine(char s[]) {
 
         int i = 0;
@@ -37,12 +34,25 @@ int getLine(char s[]) {
         return i;
 }
 
-void filter(char in[], int end) {
-
-        int len = end - 2;
-        while (in[len] == ' ') {
-                in[len] = 'x';
-                --len;
+void rev(char in[], char out[], int end) {
+     
+        int gap = 0;
+        while (in[gap] == ' ') {
+                out[gap] = ' ';
+                ++gap;
         }
 
+        int len = end - 2;
+        int i = len + gap;
+        while (len >= 0) {
+                out[i - len] = in[len];
+                --len;
+        }
+        out[i + 1] = '\n';
+        out[i + 2] = '\0';
 }
+
+
+
+
+

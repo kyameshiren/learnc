@@ -1,8 +1,7 @@
 # learnc
 
-/* Ch = Chapter problem
-/* Ex = Exercise solution
-/* Ra = Random program
+// Ch = Chapter problem
+// Ex = Exercise solution
 
 ## Chapter 1
 ### Ch 1.1 - helloworld : Hello World!
@@ -22,3 +21,4 @@
 ### Ch 1.9 - long : Prints longest line in file
 ### Ex 1.17 - 40 : Prints lines over 80 characters
 ### Ex 1.18 - clean : Removes whitespace from output
+### Ex 1.19 - rev : Reverse strings in file
