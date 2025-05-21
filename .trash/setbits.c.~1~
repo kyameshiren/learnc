@@ -1,0 +1,43 @@
+#include <stdio.h>
+
+
+unsigned int setbits(unsigned x, unsigned y, int p, int n);
+void print_binary(unsigned int x);
+
+int main(void) {
+
+        int x = 0b11110000;
+        int y = 0b00000101;
+        int p = 7;
+        int n = 4;
+    
+        print_binary(x);
+        print_binary(y);
+        unsigned int z = setbits(x, y, p, n);
+        print_binary(z);
+
+}
+
+unsigned int setbits(unsigned x, unsigned y, int p, int n) {
+
+        unsigned int mask;
+        unsigned int offset;
+        offset = p - n + 1;
+        mask = ~(~0 << n);
+        y = (y & mask) << offset;
+        x = x & (~mask << offset);
+        return x | y;
+
+}
+
+
+void print_binary(unsigned int x) {
+    int i;
+    int size = sizeof(x) * 8; // Usually 32 bits
+
+    for (i = size - 1; i >= 0; --i) {
+        putchar((x & (1u << i)) ? '1' : '0');
+        if (i % 8 == 0) putchar(' '); // Optional: add space every 8 bits
+    }
+    putchar('\n');
+}
