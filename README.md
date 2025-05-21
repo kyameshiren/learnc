@@ -6,7 +6,6 @@
 ## check - testing input/output
 ## test.c - testing small samples of code
 
-
 ## Chapter 1
 ### Ch 1.1 - helloworld : Hello World!
 ### Ch 1.2 - t : Makes temperature conversion table
@@ -39,3 +38,18 @@
 ### Ex 2.4 - rem : Remove selected characters from input string
 ### Ex 2.5 - brk : Return index of first occurence of check string in index string
 ### Ex 2.6 - setbits : Moves n bits from y to position p of x
+### Ex 2.7 - invert : Inverts n bits from position p in x
+### Ex 2.8 - rot : Rotate x bits by n
+### Ra     - bitcount : Counts '1' in bits of x
+### Ex 2.9 - fastcount : Counts '1' with x &= x - 1 bitshift trick (Kernighan's Algorithm)
+### Ra     - block : Prints input into cool block formatted output
+### Ex 2.10 - lower : Converts upper to lower without ternary operator instead of if statement
+
+
+
+
+
+
+
+
+

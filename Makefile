@@ -1,10 +1,10 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -g
-OBJS = utils.o
+CFLAGS = -Wall -Wextra -g -Isrc
+OBJS = src/utils.o
 
 
 %: %.c $(OBJS)
 	$(CC) $(CFLAGS) $^ -o $@
 
-utils.o: utils.c
-	$(CC) $(CFLAGS) -c $^ -o $@
+$(OBJS): src/utils.c src/utils.h
+	$(CC) $(CFLAGS) -c $< -o $@
