@@ -1,13 +1,13 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -g -Isrc
-OBJS = src/utils.o
+CFLAGS = -Wall -Wextra -g 
+LDFLAGS = -lm
 
 
-%: %.c $(OBJS)
+%: %.c
 	$(CC) $(CFLAGS) $^ -o $@
 
-default: default.c $(OBJS)
-	$(CC) $(CFLAGS) $^ -o $@
+default: default.c 
+	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
 
-$(OBJS): src/utils.c src/utils.h
+utils.o: src/utils.c src/utils.h
 	$(CC) $(CFLAGS) -c $< -o $@
