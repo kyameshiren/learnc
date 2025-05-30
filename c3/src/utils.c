@@ -12,7 +12,7 @@ void print_binary(unsigned int x) {
     putchar('\n');
 }
 
-int getline(char s[], int lim) {
+int get_line(char s[], int lim) {
         int c, i;
 
         for (i = 0; i < lim - 1 && (c = getchar()) != EOF && c != '\n'; ++i) {

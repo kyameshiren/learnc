@@ -47,11 +47,12 @@
 - Ex 3.3 - expand : Expand a-z to abcdef...
 - Ex 3.4 - shorthand : Convert a-z to abcdefghizjklmnopqrstuvwxyz
 ## Chapter 4
-- Ch 4.3 - pol : Basic polish calculator
+- Ch 4.3 - polBasic : Basic polish calculator
 - Ex 4.3 - polModNeg : Add modulus operator and support for negative numbers
 - Ex 4.4 - polPCDS : Add print, clear, duplicate, swap
 - Ex 4.5 - polMath : Add math.c functions
 - Ex 4.6 - polVar : Add variable support
+- Ex 4.7 - pol/polTarget : Final version, don't care to add anything else right now
 
 
 

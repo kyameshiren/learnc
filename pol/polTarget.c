@@ -1,23 +1,14 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <ctype.h>
 #include <math.h>
+#include <stdlib.h>
 #include <string.h>
+#include "op.h"
 #include "stack.h"
+#include "getch.h"
 
 // Constants for tokens
 #define MAXOP 100
-#define NUMBER '0'
-#define FUNC 200 
-#define VAR_set 300 
-#define VAR_use 301 
-#define LAST_val 302 
-
-// Functions declarations
-int getop(char[]);
-void push(double);
-double pop(void);
-
 
 // Variable storage
 double vars[26];        // variable array
@@ -26,13 +17,14 @@ double last_val;
 int main(void) {
 
         int type;
-        int i;
         double op2;
         char s[MAXOP];
+        int error = 0;
+        int hold = 0;
 
-        while ((type = getop(s)) != EOF ) {
+        while ((type = op(s)) != EOF ) {
 
-                        switch (type) {
+                switch (type) {
                         case NUMBER:
                                 push(atof(s));
                                 break;
@@ -52,6 +44,7 @@ int main(void) {
                                         push(pop() / op2);
                                 } else {
                                         printf("error: zero divisor\n");
+                                        error++;
                                 }
                                 break;
                         case '%':                              
@@ -61,32 +54,28 @@ int main(void) {
                         case 'p':
                                 printf("\n");
                                 if (last_val) {
-                                        printf("Stored: %g\n", last_val);
+                                        printf("stored: %g\n", last_val);
                                 } 
-                                if (sp > 0) {
-                                        for (i = sp - 1; i >= 0; i--) {
-                                                printf("Stack(%d): %.8g\n", i + 1, stack[i]);
-                                        }
+                                if (print_stack()) {
+                                        printf("error: unable to print\n");
+                                        error++;
                                 }
                                 break;
                         case 'c':
-                                sp = 0;
+                                clear_sp();
+                                printf("stack cleared\n");
+                                hold++;
                                 break;
                         case 'd':
-                                if (sp > 0 && sp < MAXVAL) {
-                                        stack[sp] = stack[sp - 1];
-                                        sp++;
-                                } else {
-                                        printf("error: no value to duplicate");
+                                if (!dup_stack()) {
+                                        printf("error: unable to duplicate\n");
+                                        error++;
                                 }
                                 break;
                         case 's':
-                                if (sp > 1 && sp < MAXVAL) {
-                                        double temp = stack[sp - 1];
-                                        stack[sp - 1] = stack[sp - 2];
-                                        stack[sp - 2] = temp;
-                                } else {
-                                        printf("error: not enough values to swap");
+                                if (!swap_stack()) {                                
+                                        printf("error: unable to swap\n");
+                                        error++;
                                 }
                                 break;
                         case FUNC:
@@ -105,14 +94,17 @@ int main(void) {
                                         push(pow(pop(), op2));
                                 } else {
                                         printf("error: invalid command");
+                                        error++;
                                 }
                                 break;
                         case VAR_set:
                                 int set = toupper(s[0]) - 'A';
                                 if (set >= 0 && set < 26) {
                                         vars[set] = pop();
+                                        hold++;
                                 } else {
                                         printf("error: invalid variable name");
+                                        error++;
                                 }
                                 break;
                         case VAR_use:
@@ -121,123 +113,27 @@ int main(void) {
                                         push(vars[use]);
                                 } else {
                                         printf("error: invalid variable name");
+                                        error++;
                                 }
                                 break;
                         case LAST_val:
                                 push(last_val);
+                                hold++;
                                 break;
                         case '\n':
-                                last_val = pop();
-                                printf("\tResult: %.8g\n", last_val);
+                                if (!error && !hold && get_sp() > 0) {
+                                        last_val = pop();
+                                        printf("\tResult: %.8g\n", last_val);
+                                }
+                                error = 0;
+                                hold = 0;
                                 break;
                         default:
                                 printf("error: unkown command %s\n", s);
+                                error++;
                                 break;
-                }
+                } 
         }
         return 0; 
 }
 
-
-
-
-int getch(void);
-void ungetch(int);
-
-int getop(char s[]) {
-
-        int i = 0;
-        int c, next;
-
-        while ((s[0] = c = getch()) == ' ' || c == '\t')
-                ;
-        s[1] = '\0';
-
-        if (c == '-') {
-                next = getch();
-                if (isdigit(next) || next == '.') {
-                        s[++i] = c = next;
-                } else {
-                        ungetch(next);
-                        return c;
-                }
-        } 
-
-        if (c == '=') {
-                c = getch();
-                if (isalpha(c)) {
-                        s[0] = c;
-                        s[1] = '\0';
-                        return VAR_set;
-                } else {
-                        ungetch(c);
-                        return '=';
-                }
-        }
-
-        if (c == '@') {
-                c = getch();
-                if (isalpha(c)) {
-                        s[0] = c;
-                        s[1] = '\0';
-                        return VAR_use;
-                } else {
-                        ungetch(c);
-                        return '@';
-                }
-        }
-
-        if (c == '$') {
-                return LAST_val;
-        }
-
-        if (isalpha(c)) {
-                i = 0;
-                while (isalpha(s[++i] = c = getch()))
-                        ;
-                s[i] = '\0';
-                if (c != EOF) {
-                        ungetch(c);
-                }
-                if (strlen(s) == 1) {
-                        return s[0];
-                } else {
-                        return FUNC;
-                }
-        }
-
-        if (!isdigit(c) && c != '.') {
-                return c;
-        }
-
-        if (isdigit(c)) {
-                while (isdigit(s[++i] = c = getch()))
-                        ;
-        }
-        if (c == '.') {
-                while (isdigit(s[++i] = c = getch()))
-                        ;
-        }
-        s[i] = '\0';
-        if (c != EOF) {
-                ungetch(c);
-        }
-        return NUMBER;
-}
-
-#define BUFSIZE 100
-
-char buf[BUFSIZE];
-int bufp = 0;
-
-int getch(void) {
-        return (bufp > 0) ? buf[--bufp] : getchar();
-}
-
-void ungetch(int c) {
-        if (bufp >= BUFSIZE) {
-                printf("ungetch: too many characters\n");
-        } else {
-                buf[bufp++] = c;
-        }
-}
